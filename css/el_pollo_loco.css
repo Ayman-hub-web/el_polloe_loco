@@ -1,0 +1,206 @@
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+}
+
+.round .fullScreen img {
+    width: 70px;
+    height: 70px;
+    border: none;
+}
+
+.round .fullScreen button {
+    border: none;
+}
+
+.fullScreen {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    border: none;
+}
+
+canvas {
+    background-color: black;
+}
+
+.start {
+    width: 100%;
+    height: 100%;
+    background-color: #777777;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.start img {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 1;
+}
+
+.ende img {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 1;
+}
+
+.endeWin img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: fixed;
+    z-index: 1;
+}
+
+.start button {
+    font-size: 40px!important;
+    position: relative;
+    z-index: 2;
+}
+
+.img-div {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    z-index: 2;
+    margin-bottom: 50px;
+}
+
+.img-div h1 {
+    margin-top: 100px;
+    color: rgb(240, 107, 12)!important;
+    font-size: 70px!important;
+}
+
+.img-div img {
+    width: 200px;
+    height: 100px;
+    margin-right: 32px;
+    border-radius: 100%;
+    z-index: 2;
+}
+
+.fullScreen {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.ende {
+    width: 100%;
+    height: 100%;
+}
+
+.endeWin {
+    width: 100%;
+    height: 100%;
+    left: 0;
+}
+
+.infos {
+    top: 0;
+    position: fixed;
+    width: 100%;
+    height: 200px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+}
+
+.img-round {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 32px;
+    z-index: 1;
+}
+
+.img-round img {
+    width: 150px;
+    height: 150px;
+    z-index: 1;
+}
+
+.img-round span {
+    color: #777777;
+    font-size: 20px;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.game-roles {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: burlywood;
+    z-index: 2;
+}
+
+.close {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    z-index: 1;
+}
+
+.close img {
+    width: 30px;
+    height: 30px;
+    margin-top: 16px;
+    z-index: 1;
+}
+
+.cl {
+    width: 92%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.cl img {
+    margin-top: 16px;
+}
+
+.bg-img {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 2;
+}
+
+.bg-div {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: burlywood;
+    position: relative;
+    opacity: 0.9;
+    z-index: 2;
+}

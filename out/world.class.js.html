@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: world.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: world.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>class World {
+
+    character = new Character();
+    endb = new Endboss();
+    endbh = new EndbossHurt();
+    throw = new Throwableobject();
+    level = level1;
+    ctx;
+    canvas;
+    keyboard;
+    camera_x = 0;
+    statusBar = new StatusBar();
+    statusCoins = new StatusCoins();
+    statusBottles = new StatusBottles();
+    statusEndboss = new StatusEndboss();
+    throwableObjects = [];
+    collision = false;
+    dead = false;
+    changePaso = false;
+    /**
+     * 
+     * constructor function for the class with all called fucntions
+     * @param(string, string)
+     */
+    constructor(canvas, keyboard) {
+            this.ctx = canvas.getContext('2d');
+            this.canvas = canvas;
+            this.keyboard = keyboard;
+            this.draw();
+            this.setWorld();
+            this.run();
+        }
+        /**
+         * 
+         * set character in world
+         * @param()
+         */
+    setWorld() {
+            this.character.world = this;
+            this.level.enemies.world = this;
+            this.level.pasos.world = this;
+        }
+        /**
+         * 
+         * run follow functions
+         * @param()
+         */
+    run() {
+        setInterval(() => {
+            this.checkCollisions();
+            this.checkThrowObjects();
+            this.checkWinGame();
+        }, 200);
+    }
+    i = 0;
+    /**
+     * 
+     * check if there are any collisions
+     * @param()
+     */
+    checkCollisions() {
+            this.throwableObjects.forEach((bottle) => {
+                this.level.endboss.forEach((boss, index) => {
+                    if (bottle.isColliding(boss)) {
+                        console.log("Flasche trifft Endboss", this.i);
+                        this.i++;
+                        if (this.i > 1) {
+                            this.level.endboss.splice(index, 1);
+                            this.endb.energy -= 100;
+                            this.statusEndboss.setPercentage(this.endb.energy);
+                            this.level.endboss.splice(index, 1);
+                            this.collision = true;
+                            this.character.energy = 100;
+                            this.statusBar.setPercentage(this.character.energy);
+                        }
+                    }
+                });
+            });
+            this.level.enemies.forEach((enemy) => {
+                if (this.character.isColliding(enemy)) {
+                    this.character.hit();
+                    this.statusBar.setPercentage(this.character.energy);
+                    console.log('Collision with Character Energy', this.character.energy);
+                }
+            });
+
+            this.level.pasos.forEach((paso, index) => {
+                this.changePaso = false;
+                if (this.character.isColliding(paso)) {
+                    this.character.hit();
+                    this.statusBar.setPercentage(this.character.energy);
+                    console.log('Collision with Paso');
+                }
+            });
+
+            this.level.endboss.forEach((endb) => {
+                if (this.character.isColliding(endb) &amp;&amp; !this.collision) {
+                    this.character.energy = 0;
+                    this.statusBar.setPercentage(this.character.energy);
+                    console.log('Collision with Endboss');
+                }
+            });
+            this.level.coins.forEach((coin, index) => {
+                if (this.character.isColliding(coin)) {
+                    console.log('collision');
+                    this.level.coins.splice(index, 1);
+                    this.statusCoins.setPercentage(100 - (this.level.coins.length - 1) * 20);
+                    console.log('Länge vom array', this.level.coins.length);
+                }
+            });
+            this.level.bottles.forEach((bottle, index) => {
+                if (this.character.isColliding(bottle)) {
+                    console.log('collision');
+                    this.level.bottles.splice(index, 1);
+                    this.statusBottles.setPercentage(100 - this.level.bottles.length * 20);
+                    console.log('Länge vom array', this.level.bottles.length);
+                }
+            });
+
+        }
+        /**
+         * 
+         * check if there are throwed objects
+         * @param()
+         */
+    checkThrowObjects() {
+            if (this.keyboard.D &amp;&amp; this.statusBottles.resolveImageIndex() > 0) {
+                let bottleThrow = new Throwableobject(this.character.x + 100, this.character.y + 100);
+                console.log("X ACHSE Endboss", this.endb.x);
+                console.log("X ACHSE thrwo", this.character.x + 100);
+                this.throwableObjects.push(bottleThrow);
+
+            }
+        }
+        /**
+         * 
+         * check if character won game
+         * @param()
+         */
+    checkWinGame() {
+            if (this.character.x > 2400 &amp;&amp; !this.character.isAboveGround()) {
+                this.character.jump();
+                setTimeout(() => {
+                    this.character.winGameOver();
+                }, 5000);
+            }
+        }
+        /**
+         * 
+         * draw objects on ctx
+         * @param()
+         */
+    draw() {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+            this.ctx.translate(this.camera_x, 0);
+
+            this.objectsToMap(this.level.backgroundobjects);
+
+            this.ctx.translate(-this.camera_x, 0); //Back
+            this.addToMap(this.statusBar);
+            this.addToMap(this.statusCoins);
+            this.addToMap(this.statusBottles);
+            this.addToMap(this.statusEndboss);
+            this.ctx.translate(this.camera_x, 0); //Forward
+
+            this.objectsToMap(this.level.enemies);
+            this.objectsToMap(this.level.pasos);
+            // if (this.changePaso) {
+            //     this.objectsToMap(this.level.pasosdead);
+            // }
+            this.objectsToMap(this.level.clouds);
+            this.objectsToMap(this.level.coins);
+            this.objectsToMap(this.level.bottles);
+            this.addToMap(this.character);
+            this.objectsToMap(this.level.endboss);
+            if (this.collision) {
+                this.objectsToMap(this.level.endbossDead);
+            }
+            this.objectsToMap(this.throwableObjects);
+
+            this.ctx.translate(-this.camera_x, 0);
+
+            let self = this;
+            requestAnimationFrame(function() {
+                self.draw();
+            });
+        }
+        /**
+         * 
+         * insert many objects to ctx
+         * @param(string)
+         */
+    objectsToMap(objects) {
+            objects.forEach(o => {
+                this.addToMap(o);
+            })
+        }
+        /**
+         * 
+         * insert object to ctx
+         * @param(string)
+         */
+    addToMap(mo) {
+            if (mo.otherDirection) {
+                this.flipImage(mo);
+            }
+            mo.draw(this.ctx);
+            mo.drawFrame(this.ctx);
+
+            if (mo.otherDirection) {
+                this.flipImageBack(mo);
+            }
+        }
+        /**
+         * 
+         * reflect image
+         * @param(string)
+         */
+    flipImage(mo) {
+            this.ctx.save();
+            this.ctx.translate(mo.width, 0);
+            this.ctx.scale(-1, 1);
+            mo.x = mo.x * -1;
+        }
+        /**
+         * 
+         * reflect iamge back
+         * @param(string)
+         */
+    flipImageBack(mo) {
+        this.ctx.restore();
+        mo.x = mo.x * -1;
+    }
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Backgroundobject.html">Backgroundobject</a></li><li><a href="Bottles.html">Bottles</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coins.html">Coins</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossDead.html">EndbossDead</a></li><li><a href="EndbossHurt.html">EndbossHurt</a></li><li><a href="Level.html">Level</a></li><li><a href="Paso.html">Paso</a></li><li><a href="PasoDead.html">PasoDead</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="StatusBottles.html">StatusBottles</a></li><li><a href="StatusCoins.html">StatusCoins</a></li><li><a href="StatusEndboss.html">StatusEndboss</a></li><li><a href="Throwableobject.html">Throwableobject</a></li><li><a href="World.html">World</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Dec 29 2021 10:49:31 GMT+0100 (Mitteleuropäische Normalzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

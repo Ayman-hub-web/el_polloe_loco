@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: moveable-object.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: moveable-object.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>class Moveableobject extends DrawableObject {
+
+
+    speed = 0.15;
+    otherDirection = false;
+    speedY = 0;
+    acceleration = 2.5;
+    energy = 100;
+    lastHit = 0;
+
+
+    /**
+     * 
+     * make garavity
+     * @param()
+     */
+    applayGravity() {
+            setInterval(() => {
+                if (this.isAboveGround() || this.speedY > 0) {
+                    this.y -= this.speedY;
+                    this.speedY -= this.acceleration;
+                }
+            }, 1000 / 25);
+        }
+        /**
+         * 
+         * when object above
+         * @param()
+         */
+    isAboveGround() {
+            if (this instanceof Throwableobject) { //Throwableobject should always fall
+                return true;
+            } else {
+                return this.y &lt; 130;
+            }
+        }
+        /**
+         * 
+         * return true when there are collision
+         * @param(string)
+         */
+    isColliding(mo) {
+            return this.x + this.width > mo.x &amp;&amp;
+                this.y + this.height > mo.y &amp;&amp;
+                this.x &lt; mo.x &amp;&amp;
+                this.y &lt; mo.y + mo.height
+        }
+        /**
+         * 
+         * Object move right
+         * @param()
+         */
+    moveRight() {
+            this.x += this.speed;
+            this.walking_sound.play();
+        }
+        /**
+         * 
+         * Object move left
+         * @param()
+         */
+    moveLeft() {
+            this.x -= this.speed;
+        }
+        /**
+         * 
+         * make animation with images
+         * @param(array)
+         */
+    playAnimation(images) {
+            let i = this.currentImage % images.length;
+            let path = images[i];
+            this.img = this.imageCache[path];
+            this.currentImage++;
+        }
+        /**
+         * 
+         * object can jump
+         * @param()
+         */
+    jump() {
+            this.speedY = 30;
+        }
+        /**
+         * 
+         * change energy of object
+         * @param()
+         */
+    hit() {
+            this.energy -= 5; // von der Energy 5 abziehen, bis die Enrgy null iwrd
+            if (this.energy &lt; 0) {
+                this.energy = 0;
+            } else {
+                this.lastHit = new Date().getTime(); // Zeitpunkt speichern an dem character verletzt wurde
+
+            }
+
+        }
+        /**
+         * 
+         * change energy when object killed
+         * @param()
+         */
+    kill() {
+        this.energy += 5; // von der Energy 5 abziehen, bis die Enrgy null iwrd
+        if (this.energy > 100) {
+            this.energy = 100;
+        } else {
+            this.lastHit = new Date().getTime(); // Zeitpunkt speichern an dem character paso getötet hat
+
+        }
+
+    }
+
+    /**
+     * 
+     * return true when object killed
+     * @param()
+     */
+    isDead() {
+            return this.energy == 0;
+        }
+        /**
+         * 
+         * return true when object injured
+         * @param()
+         */
+    isHurt() {
+        let timepassed = new Date().getTime() - this.lastHit; // die Zeit berechnen von der Collision bis jetzt// Differenz in Mileseconden
+        timepassed = timepassed / 1000; // Die Differenz in seconden
+        return timepassed &lt; 1;
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Backgroundobject.html">Backgroundobject</a></li><li><a href="Bottles.html">Bottles</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Coins.html">Coins</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossDead.html">EndbossDead</a></li><li><a href="EndbossHurt.html">EndbossHurt</a></li><li><a href="Level.html">Level</a></li><li><a href="Paso.html">Paso</a></li><li><a href="PasoDead.html">PasoDead</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="StatusBottles.html">StatusBottles</a></li><li><a href="StatusCoins.html">StatusCoins</a></li><li><a href="StatusEndboss.html">StatusEndboss</a></li><li><a href="Throwableobject.html">Throwableobject</a></li><li><a href="World.html">World</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Dec 29 2021 10:49:31 GMT+0100 (Mitteleuropäische Normalzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
