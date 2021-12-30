@@ -181,9 +181,9 @@ class World {
             this.objectsToMap(this.level.bottles);
             this.addToMap(this.character);
             this.objectsToMap(this.level.endboss);
-            // if (this.collision) {
-            //     this.objectsToMap(this.level.endbossDead);
-            // }
+            if (this.collision) {
+                this.objectsToMap(this.level.endbossDead);
+            }
             // if (this.explosion) {
             //     this.addToMap(this.bottleExplosion);
             // }
